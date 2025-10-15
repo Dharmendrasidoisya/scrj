@@ -49,52 +49,56 @@ abstract class AbstractHandler
      * @see UploadedFile::getClientOriginalName()
      * @see Session::getId()
      */
-    public function createChunkFileName($additionalName = null, $currentChunkIndex = null)
-    {
-        // Prepare basic name structure
-        $array = [
-            $this->file->getClientOriginalName(),
-        ];
+   public function createChunkFileName($additionalName = null, $currentChunkIndex = null)
+{
+    // Get only safe base name (prevent directory traversal)
+    $originalName = basename($this->file->getClientOriginalName());
+    
+    // Remove unsafe characters (allow only letters, numbers, dash, underscore, and dot)
+    $safeName = preg_replace('/[^A-Za-z0-9_\.-]/', '_', $originalName);
 
-        // Ensure that the chunk name is for unique for the client session
-        $useSession = $this->config['chunk']['name']['use']['session'];
-        $useBrowser = $this->config['chunk']['name']['use']['browser'];
-        if ($useSession && false === static::canUseSession()) {
-            $useBrowser = true;
-            $useSession = false;
-        }
+    // Start building a safe filename
+    $array = [$safeName];
 
-        // The session needs more config on the provider
-        if ($useSession) {
-            $array[] = Session::getId();
-        }
+    $useSession = $this->config['chunk']['name']['use']['session'];
+    $useBrowser = $this->config['chunk']['name']['use']['browser'];
 
-        // Can work without any additional setup
-        if ($useBrowser) {
-            $array[] = md5($this->request->ip() . $this->request->header('User-Agent', 'no-browser'));
-        }
-
-        // Add additional name for more unique chunk name
-        if ($additionalName !== null) {
-            $array[] = $additionalName;
-        }
-
-        // Build the final name - parts separated by dot
-        $namesSeparatedByDot = [
-            implode('-', $array),
-        ];
-
-        // Add the chunk index for parallel upload
-        if (null !== $currentChunkIndex) {
-            $namesSeparatedByDot[] = $currentChunkIndex;
-        }
-
-        // Add extension
-        $namesSeparatedByDot[] = ChunkStorage::CHUNK_EXTENSION;
-
-        // Build name
-        return implode('.', $namesSeparatedByDot);
+    if ($useSession && false === static::canUseSession()) {
+        $useBrowser = true;
+        $useSession = false;
     }
+
+    // Append session ID (hashed for safety)
+    if ($useSession) {
+        $array[] = hash('sha256', Session::getId());
+    }
+
+    // Append browser info (hashed to avoid raw user data)
+    if ($useBrowser) {
+        $clientIdentifier = $this->request->ip() . $this->request->header('User-Agent', 'no-browser');
+        $array[] = hash('sha256', $clientIdentifier);
+    }
+
+    // Optional additional name (also sanitized)
+    if ($additionalName !== null) {
+        $safeAdditional = preg_replace('/[^A-Za-z0-9_\.-]/', '_', $additionalName);
+        $array[] = $safeAdditional;
+    }
+
+    // Build filename parts
+    $namesSeparatedByDot = [implode('-', $array)];
+
+    if (null !== $currentChunkIndex) {
+        $namesSeparatedByDot[] = intval($currentChunkIndex); // ensure it's numeric
+    }
+
+    // Add secure extension
+    $namesSeparatedByDot[] = ChunkStorage::CHUNK_EXTENSION;
+
+    // Final sanitized name
+    return implode('.', $namesSeparatedByDot);
+}
+
 
     /**
      * Creates save instance and starts saving the uploaded file.
