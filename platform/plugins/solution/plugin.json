@@ -1,0 +1,10 @@
+{
+    "id": "Botble/solution",
+    "name": "Solution",
+    "namespace": "Botble\\Solution\\",
+    "provider": "Botble\\Solution\\Providers\\SolutionServiceProvider",
+     "author": "ADS India",
+    "url": "https://www.goadsindia.com/",
+    "version": "1.0",
+    "description": "Manage Solution, scategories, stags"
+}

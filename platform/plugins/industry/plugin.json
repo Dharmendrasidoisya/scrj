@@ -1,0 +1,10 @@
+{
+    "id": "Botble/industry",
+    "name": "Industry",
+    "namespace": "Botble\\Industry\\",
+    "provider": "Botble\\Industry\\Providers\\IndustryServiceProvider",
+     "author": "ADS India",
+    "url": "https://www.goadsindia.com/",
+    "version": "1.0",
+    "description": "Manage Industry, industrycategories, industrytags"
+}

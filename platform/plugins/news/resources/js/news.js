@@ -1,0 +1,5 @@
+$(() => {
+    'use strict'
+
+    BDashboard.loadWidget($('#widget_newsposts_recent').find('.widget-content'), route('newsposts.widget.recent-newsposts'))
+})

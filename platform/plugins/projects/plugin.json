@@ -1,0 +1,10 @@
+{
+    "id": "Botble/projects",
+    "name": "Projects",
+    "namespace": "Botble\\Projects\\",
+    "provider": "Botble\\Projects\\Providers\\ProjectsServiceProvider",
+     "author": "ADS India",
+    "url": "https://www.goadsindia.com/",
+    "version": "1.0",
+    "description": "Manage Projects, projectscategories, projectstags"
+}

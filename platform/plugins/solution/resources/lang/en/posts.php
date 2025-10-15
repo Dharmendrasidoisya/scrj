@@ -1,0 +1,30 @@
+<?php
+
+return [
+    'create' => 'Create new post',
+    'form' => [
+        'name' => 'Name',
+        'name_placeholder' => 'Post\'s name (Maximum :c characters)',
+        'description' => 'Description',
+        'description_placeholder' => 'Short description for post (Maximum :c characters)',
+        'scategories' => 'scategories',
+        'stags' => 'tags',
+        'stags_placeholder' => 'stags',
+        'content' => 'Content',
+        'is_featured' => 'Is featured?',
+        'note' => 'Note content',
+        'format_type' => 'Format',
+    ],
+    'cannot_delete' => 'Post could not be deleted',
+    'post_deleted' => 'Post deleted',
+    'sposts' => 'sposts',
+    'post' => 'Post',
+    'edit_this_post' => 'Edit this post',
+    'no_new_post_now' => 'There is no new post now!',
+    'menu_name' => 'sposts',
+    'widget_sposts_recent' => 'Recent sposts',
+    'Products' => 'Products',
+    'scategories' => 'scategories',
+    'category' => 'Category',
+    'author' => 'Author',
+];

@@ -1,0 +1,10 @@
+{
+    "id": "Botble/news",
+    "name": "News",
+    "namespace": "Botble\\News\\",
+    "provider": "Botble\\News\\Providers\\NewsServiceProvider",
+     "author": "ADS India",
+    "url": "https://www.goadsindia.com/",
+    "version": "1.0",
+    "description": "Manage News, newscategories, newstags"
+}

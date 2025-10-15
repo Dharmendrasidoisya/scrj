@@ -1,0 +1,39 @@
+<?php
+
+namespace Botble\News\Models;
+
+use Botble\Base\Casts\SafeContent;
+use Botble\Base\Enums\BaseStatusEnum;
+use Botble\Base\Models\BaseModel;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+
+class Tag extends BaseModel
+{
+    protected $table = 'newstags';
+
+    protected $fillable = [
+        'name',
+        'description',
+        'status',
+        'author_id',
+        'author_type',
+    ];
+
+    protected $casts = [
+        'status' => BaseStatusEnum::class,
+        'name' => SafeContent::class,
+        'description' => SafeContent::class,
+    ];
+
+    protected static function booted(): void
+    {
+        static::deleted(function (Tag $stag) {
+            $stag->newsposts()->detach();
+        });
+    }
+
+    public function newsposts(): BelongsToMany
+    {
+        return $this->belongsToMany(Post::class, 'spost_newstags');
+    }
+}

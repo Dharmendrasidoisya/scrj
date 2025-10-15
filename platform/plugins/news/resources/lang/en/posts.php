@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'create' => 'Create new post',
+    'form' => [
+        'name' => 'Name',
+        'name_placeholder' => 'Post\'s name (Maximum :c characters)',
+        'description' => 'Description',
+        'description_placeholder' => 'Short description for post (Maximum :c characters)',
+        'shortdescription' => 'Shortdescription',
+        'shortdescription_placeholder' => 'Short shortdescription for post (Maximum :c characters)',
+        'newscategories' => 'newscategories',
+        'newstags' => 'tags',
+        'newstags_placeholder' => 'newstags',
+        'content' => 'Content',
+        'is_featured' => 'Is featured?',
+        'note' => 'Note content',
+        'format_type' => 'Format',
+    ],
+    'cannot_delete' => 'Post could not be deleted',
+    'post_deleted' => 'Post deleted',
+    'newsposts' => 'newsposts',
+    'post' => 'Post',
+    'edit_this_post' => 'Edit this post',
+    'no_new_post_now' => 'There is no new post now!',
+    'menu_name' => 'newsposts',
+    'widget_newsposts_recent' => 'Recent newsposts',
+    'Products' => 'Products',
+    'newscategories' => 'newscategories',
+    'category' => 'Category',
+    'author' => 'Author',
+];
