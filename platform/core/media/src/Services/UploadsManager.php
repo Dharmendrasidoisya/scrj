@@ -83,29 +83,47 @@ class UploadsManager
         return Storage::delete($path);
     }
 
-    public function saveFile(
-        string $path,
-        string $content,
-        UploadedFile $file = null,
-        array $visibility = ['visibility' => 'public']
-    ): bool {
-        if (! RvMedia::isChunkUploadEnabled() || ! $file) {
-            return Storage::put($this->cleanFolder($path), $content, $visibility);
-        }
+   public function saveFile(
+    string $path,
+    string $content,
+    UploadedFile $file = null,
+    array $visibility = ['visibility' => 'public']
+): bool {
+    if (!RvMedia::isChunkUploadEnabled() || !$file) {
+        return Storage::put($this->cleanFolder($path), $content, $visibility);
+    }
 
-        $currentChunksPath = RvMedia::getConfig('chunk.storage.chunks') . '/' . $file->getFilename();
-        $disk = Storage::disk(RvMedia::getConfig('chunk.storage.disk'));
+    // ✅ Get base directory for chunks from config and sanitize it
+    $baseChunkDir = rtrim(RvMedia::getConfig('chunk.storage.chunks'), '/');
 
-        try {
-            $stream = $disk->getDriver()->readStream($currentChunksPath);
+    // ✅ Sanitize the user-supplied filename
+    $originalFilename = $file->getFilename();
+    $safeFilename = basename($originalFilename); // removes directory traversal like ../
+    $safeFilename = preg_replace('/[^A-Za-z0-9_\.-]/', '_', $safeFilename); // allow only safe chars
 
-            if ($result = Storage::writeStream($path, $stream, $visibility)) {
-                $disk->delete($currentChunksPath);
-            }
-        } catch (Exception|FilesystemException) {
-            return Storage::put($this->cleanFolder($path), $content, $visibility);
+    // ✅ Build a safe chunk path
+    $currentChunksPath = $baseChunkDir . '/' . $safeFilename;
+
+    // ✅ Use a trusted disk from config
+    $disk = Storage::disk(RvMedia::getConfig('chunk.storage.disk'));
+
+    try {
+        // ✅ Read safely from the chunk storage
+        $stream = $disk->getDriver()->readStream($currentChunksPath);
+
+        // ✅ Clean destination path before saving
+        $safeDestination = $this->cleanFolder($path);
+
+        if ($result = Storage::writeStream($safeDestination, $stream, $visibility)) {
+            // Delete the temporary chunk only if write was successful
+            $disk->delete($currentChunksPath);
         }
 
         return $result;
+    } catch (Exception|FilesystemException $e) {
+        // Fallback: store directly if reading fails
+        return Storage::put($this->cleanFolder($path), $content, $visibility);
     }
+}
+
 }
