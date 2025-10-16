@@ -505,27 +505,7 @@
           if (pos < i$7) { order.splice(at, 0, new BidiSpan(1, pos, i$7)); }
         }
       }
-        if (direction === "ltr") {
-  const len = str.length;
-
-  // Leading whitespace handling
-  if (order[0].level === 1) {
-    const leading = len - str.trimStart().length;
-    if (leading > 0) {
-      order[0].from = leading;
-      order.unshift(new BidiSpan(0, 0, leading));
-    }
-  }
-
-  // Trailing whitespace handling
-  if (lst(order).level === 1) {
-    const trailing = len - str.trimEnd().length;
-    if (trailing > 0) {
-      lst(order).to -= trailing;
-      order.push(new BidiSpan(0, len - trailing, len));
-    }
-  }
-}
+ if (direction == "ltr") { if (order[0].level == 1 && (m = str.match(/^\s+/))) { order[0].from = m[0].length; order.unshift(new BidiSpan(0, 0, m[0].length)); } if (lst(order).level == 1 && (m = str.match(/\s+$/))) { lst(order).to -= m[0].length; order.push(new BidiSpan(0, len - m[0].length, len)); } }
 
 
       return direction == "rtl" ? order.reverse() : order
